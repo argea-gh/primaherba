@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Checkout — Herbaprima</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script defer src="assets/js/main.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <img src="https://hni.id/_next/image?url=%2Flogo_hni_daun.webp&w=1920&q=75" alt="Herbaprima" style="height:36px;vertical-align:middle">
+        <span style="margin-left:8px;font-weight:800;color:var(--accent);">Herbaprima</span>
+      </a>
+
+      <button id="hamburgerBtn" class="hamburger" aria-label="Buka menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html">Beranda</a>
+        <a href="products.html">Produk</a>
+        <a href="about.html">Tentang Kami</a>
+        <a href="#contact">Kontak</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="btn cart-btn" id="cartBtn4" aria-label="Keranjang">
+          <span class="icon">🛒</span>
+          <span id="cartCount4" class="cart-count">0</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobileNav" class="mobile-nav" aria-hidden="true">
+      <div class="mobile-nav-inner">
+        <a href="index.html">Beranda</a>
+        <a href="products.html">Produk</a>
+        <a href="about.html">Tentang Kami</a>
+        <a href="#contact">Kontak</a>
+      </div>
+      <button class="mobile-nav-close" id="mobileNavClose" aria-label="Tutup menu">✕</button>
+    </div>
+
+    <div id="cartOverlay" class="cart-overlay" aria-hidden="true">
+      <div class="cart-panel">
+        <h3>Keranjang Anda</h3>
+        <div id="cartItems" class="cart-items"></div>
+        <div class="cart-footer">
+          <div class="cart-total">Total: <span id="cartTotal">Rp0</span></div>
+          <div class="cart-actions">
+            <a href="checkout.html" class="btn btn-primary">Checkout</a>
+            <button class="btn btn-ghost" id="closeCart">Tutup</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </header>
+
+  <main class="container checkout-page">
+    <h1>Checkout</h1>
+    <div class="checkout-grid">
+      <form id="checkoutForm" class="checkout-form">
+        <label>Nama Lengkap
+          <input type="text" id="custName" name="custName" required>
+        </label>
+        <label>Nomor Handphone
+          <input type="tel" id="custPhone" name="custPhone" placeholder="+628..." required>
+        </label>
+        <label>Alamat Pengiriman
+          <textarea id="custAddress" name="custAddress" rows="4" required></textarea>
+        </label>
+        <label>Catatan (opsional)
+          <textarea id="custNote" rows="2"></textarea>
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Kirim Pesanan via WhatsApp</button>
+          <a class="btn btn-ghost" href="products.html">Lanjut Belanja</a>
+        </div>
+      </form>
+
+      <aside class="order-summary">
+        <h3>Ringkasan Pesanan</h3>
+        <div id="orderItems" class="order-items"></div>
+        <div class="order-total">Total: <strong id="orderTotal">Rp0</strong></div>
+      </aside>
+    </div>
+  </main>
+
+  <button id="scrollTopBtn" class="scroll-top" aria-label="Ke atas">↑</button>
+
+  <footer id="contact" class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <h4>Herbaprima</h4>
+        <p>Menawarkan produk herbal berkualitas untuk kesehatan keluarga Anda.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Alamat</h5>
+        <address>
+          Jl. Sehat No. 12, Jakarta<br/>
+          Indonesia
+        </address>
+      </div>
+      <div class="footer-col">
+        <h5>Kontak</h5>
+        <p>Telp: +62 822-4190-0467<br/>Email: info@herbaprima.id</p>
+      </div>
+      <div class="footer-col">
+        <h5>Informasi</h5>
+        <p><a href="index.html">Beranda</a><br/><a href="about.html">Tentang Kami</a></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

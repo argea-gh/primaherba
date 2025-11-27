@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Herbaprima — Produk Kesehatan Herbal Premium</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script defer src="assets/js/main.js"></script>
+</head>
+<body class="home">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <img src="https://hni.id/_next/image?url=%2Flogo_hni_daun.webp&w=1920&q=75" alt="Herbaprima" style="height:36px;vertical-align:middle">
+        <span style="margin-left:8px;font-weight:800;color:var(--accent);">Herbaprima</span>
+      </a>
+
+      <button id="hamburgerBtn" class="hamburger" aria-label="Buka menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html">Beranda</a>
+        <a href="products.html">Produk</a>
+        <a href="about.html">Tentang Kami</a>
+        <a href="#contact">Kontak</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="btn cart-btn" id="cartBtn" aria-label="Keranjang">
+          <span class="icon">🛒</span>
+          <span id="cartCount" class="cart-count">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile nav drawer -->
+    <div id="mobileNav" class="mobile-nav" aria-hidden="true">
+      <div class="mobile-nav-inner">
+        <a href="index.html">Beranda</a>
+        <a href="products.html">Produk</a>
+        <a href="about.html">Tentang Kami</a>
+        <a href="#contact">Kontak</a>
+      </div>
+      <button class="mobile-nav-close" id="mobileNavClose" aria-label="Tutup menu">✕</button>
+    </div>
+
+    <!-- Cart overlay (present on all pages) -->
+    <div id="cartOverlay" class="cart-overlay" aria-hidden="true">
+      <div class="cart-panel">
+        <h3>Keranjang Anda</h3>
+        <div id="cartItems" class="cart-items"></div>
+        <div class="cart-footer">
+          <div class="cart-total">Total: <span id="cartTotal">Rp0</span></div>
+          <div class="cart-actions">
+            <a href="checkout.html" class="btn btn-primary">Checkout</a>
+            <button class="btn btn-ghost" id="closeCart">Tutup</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </header>
+
+  <main>
+    <!-- HERO / SLIDER -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-left">
+          <h1>Herbal Berkualitas, Sehat Alami</h1>
+          <p class="lead">Madu murni, suplemen herbal, dan ramuan tradisional—diformulasikan untuk kesehatan optimal. Pengiriman cepat & pembelian aman.</p>
+          <a class="btn btn-primary" href="products.html">Belanja Sekarang</a>
+        </div>
+        <div class="hero-right">
+          <div class="slider" id="heroSlider" aria-roledescription="carousel">
+            <div class="slides">
+              <div class="slide active">
+                <img src="https://hni.net/public/front/img/produk/hni-health-3_18-11-24_.png" alt="Madu Alami">
+              </div>
+              <div class="slide">
+                <img src="https://hni.net/public/front/img/produk/fibdrink_10-12-22_.png" alt="Suplemen Herbal">
+              </div>
+              <div class="slide">
+                <img src="https://hni.net/public/front/img/produk/sevel-stamina_11-09-25_.png" alt="Pengemasan Premium">
+              </div>
+            </div>
+            <button class="slider-nav prev" aria-label="Sebelumnya">‹</button>
+            <button class="slider-nav next" aria-label="Berikutnya">›</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BANNER PROMO -->
+    <section class="promo">
+      <div class="container promo-grid">
+        <div class="promo-card">
+          <h4>Gratis Ongkir</h4>
+          <p>Untuk pembelian di atas Rp300.000</p>
+        </div>
+        <div class="promo-card">
+          <h4>Garansi Asli</h4>
+          <p>Produk asli & teruji kualitas</p>
+        </div>
+        <div class="promo-card">
+          <h4>Support WA 24/7</h4>
+          <p>Pesan cepat melalui WhatsApp</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENU PRODUK (GRID 4 KOL) -->
+    <section class="products-preview">
+      <div class="container">
+        <div class="section-head">
+          <h2>Produk Populer</h2>
+          <a href="products.html" class="view-all">Lihat Semua</a>
+        </div>
+        <div id="productsGrid" class="products-grid"></div>
+      </div>
+    </section>
+
+    <!-- PRODUK TERLARIS -->
+    <section class="bestsellers">
+      <div class="container">
+        <h2>Produk Terlaris</h2>
+        <div id="bestsellers" class="bestsellers-grid"></div>
+      </div>
+    </section>
+
+    <!-- REVIEW PELANGGAN -->
+    <section class="reviews">
+      <div class="container">
+        <h2>Apa Kata Pelanggan</h2>
+        <div id="reviewsCarousel" class="reviews-carousel">
+          <!-- diisi oleh JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Scroll to top button -->
+  <button id="scrollTopBtn" class="scroll-top" aria-label="Ke atas">↑</button>
+
+  <!-- FOOTER -->
+  <footer id="contact" class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <h4>Herbaprima</h4>
+        <p>Menawarkan produk herbal berkualitas untuk kesehatan keluarga Anda.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Alamat</h5>
+        <address>
+          Jl. Sehat No. 12, Jakarta<br/>
+          Indonesia
+        </address>
+      </div>
+      <div class="footer-col">
+        <h5>Kontak</h5>
+        <p>Telp: +62 822-4190-0467<br/>Email: info@herbaprima.id</p>
+      </div>
+      <div class="footer-col">
+        <h5>Informasi</h5>
+        <p><a href="about.html">Tentang Kami</a><br/><a href="products.html">Katalog Produk</a></p>
+      </div>
+    </div>
+    <div class="container copyright">
+      © <span id="year"></span> Herbaprima — Semua hak dilindungi.
+    </div>
+  </footer>
+
+</body>
+</html>
