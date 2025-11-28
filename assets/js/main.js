@@ -165,59 +165,6 @@ function refreshCartUI(){
 
 function getQty(id){ const cart = getCart(); const it = cart.find(x=>x.id===id); return it?it.qty:0; }
 
-// ---- Product detail page rendering ----
-function renderProductDetail(){
-  const el = document.getElementById('productDetail');
-  if(!el) return;
-  const qp = new URLSearchParams(location.search);
-  const id = parseInt(qp.get('id')||'0',10);
-  const prod = PRODUCTS.find(p=>p.id===id) || PRODUCTS[0];
-  el.innerHTML = `
-    <div class="product-detail-card" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
-      <div>
-        <div style="background:var(--soft);border-radius:12px;padding:1rem;text-align:center">
-          <img src="${prod.img}" alt="${prod.name}" style="max-width:100%;height:320px;object-fit:contain">
-        </div>
-      </div>
-      <div>
-        <h1>${prod.name}</h1>
-        <div style="color:var(--muted);margin-bottom:0.6rem">${prod.desc}</div>
-        <div style="font-size:1.2rem;color:var(--accent);font-weight:700">${rupiah(prod.price)}</div>
-        <div style="margin-top:1rem;display:flex;gap:0.6rem;align-items:center">
-          <label>Jumlah <input id="qtySelect" type="number" min="1" value="1" style="width:80px;padding:0.4rem;border-radius:8px;border:1px solid #e6eef0"></label>
-          <button id="addToCartBtn" class="btn btn-primary">Tambah ke Keranjang</button>
-          <a href="checkout.html" class="btn btn-ghost">Checkout</a>
-        </div>
-        <div style="margin-top:1.2rem;color:var(--muted)">
-          <strong>Terjual:</strong> ${prod.sold} &nbsp; | &nbsp; <strong>Kategori:</strong> ${prod.category}
-        </div>
-      </div>
-    </div>
-  `;
-  const btn = document.getElementById('addToCartBtn');
-  btn.addEventListener('click', ()=>{
-    const qty = parseInt(document.getElementById('qtySelect').value||'1',10);
-    addToCart(prod.id, qty);
-    btn.textContent = 'Ditambahkan ✓';
-    setTimeout(()=> btn.textContent = 'Tambah ke Keranjang', 900);
-  });
-}
-
-// ---- Hero slider basic ----
-function initSlider(){
-  const slider = document.getElementById('heroSlider');
-  if(!slider) return;
-  const slides = slider.querySelectorAll('.slide');
-  let idx = 0;
-  function show(i){ slides.forEach((s,si)=> s.style.display = (si===i? 'block':'none')); }
-  show(0);
-  const nextBtn = slider.querySelector('.next');
-  const prevBtn = slider.querySelector('.prev');
-  if(nextBtn) nextBtn.addEventListener('click', ()=> { idx = (idx+1)%slides.length; show(idx); });
-  if(prevBtn) prevBtn.addEventListener('click', ()=> { idx = (idx-1+slides.length)%slides.length; show(idx); });
-  setInterval(()=>{ idx=(idx+1)%slides.length; show(idx); }, 5000);
-}
-
 // ---- Tooltip helper for cart buttons ----
 let _cartTooltipEl = null;
 function showCartTooltip(button, text = "Lihat keranjang Anda"){
@@ -265,7 +212,7 @@ function initCartOverlay(){
   if(close) close.addEventListener('click', ()=> toggleCart());
   overlay && overlay.addEventListener('click', (e)=> { if(e.target === overlay) toggleCart(); });
 
-  // ensure overlay initial state class
+  // ensure overlay initial state class removed
   if(overlay) overlay.classList.remove('open');
 }
 function toggleCart(){
@@ -290,21 +237,21 @@ function initMobileMenu(){
   hamburgerBtns.forEach(h=>{
     h.addEventListener('click', ()=> {
       if(mobileNav) {
+        mobileNav.classList.add('open');
         mobileNav.setAttribute('aria-hidden','false');
-        mobileNav.style.display = 'flex';
       }
     });
   });
   if(mobileNavClose) mobileNavClose.addEventListener('click', ()=> {
     if(mobileNav){
+      mobileNav.classList.remove('open');
       mobileNav.setAttribute('aria-hidden','true');
-      mobileNav.style.display = 'none';
     }
   });
   // close mobile menu when clicking a link inside
   const mobileLinks = mobileNav ? mobileNav.querySelectorAll('a') : [];
   mobileLinks.forEach(a=> a.addEventListener('click', ()=> {
-    if(mobileNav){ mobileNav.setAttribute('aria-hidden','true'); mobileNav.style.display = 'none'; }
+    if(mobileNav){ mobileNav.classList.remove('open'); mobileNav.setAttribute('aria-hidden','true'); }
   }));
 }
 
