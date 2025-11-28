@@ -36,20 +36,42 @@ body{
   border:0;
   width:44px;height:44px;border-radius:8px;cursor:pointer;
   align-items:center;justify-content:center;padding:6px;
+  flex-direction:column; /* stacked lines */
 }
 .hamburger-line{
   display:block;width:22px;height:2px;background:var(--muted);margin:4px 0;border-radius:2px;
 }
 
-/* Mobile nav drawer */
+/* Mobile nav drawer (hidden by default) */
 .mobile-nav{
-  position:fixed;inset:0;display:none;z-index:85;align-items:flex-start;justify-content:center;
+  position:fixed;
+  inset:0;
+  display:none; /* do not show automatically on load */
+  z-index:85;
+  align-items:flex-start;
+  justify-content:center;
+  background:rgba(8,15,20,0.0);
+  opacity:0;
+  transition:opacity .18s ease, background-color .18s ease;
+  pointer-events:none;
+}
+.mobile-nav.open{
+  display:flex;
   background:rgba(8,15,20,0.35);
+  opacity:1;
+  pointer-events:auto;
 }
 .mobile-nav-inner{
   margin-top:64px;
-  background:var(--card);width:100%;max-width:360px;padding:1.25rem;box-shadow:0 12px 40px rgba(12,34,40,0.2);border-radius:8px;
-  display:flex;flex-direction:column;gap:0.8rem;
+  background:var(--card);
+  width:100%;
+  max-width:360px;
+  padding:1.25rem;
+  box-shadow:0 12px 40px rgba(12,34,40,0.2);
+  border-radius:8px;
+  display:flex;
+  flex-direction:column;
+  gap:0.8rem;
 }
 .mobile-nav a{color:var(--accent);text-decoration:none;font-weight:600}
 .mobile-nav-close{
@@ -173,7 +195,7 @@ body{
   border-radius:1px;
 }
 
-/* Scroll top button */
+/* Scroll top button (floating) */
 .scroll-top{
   position:fixed;
   bottom:20px;
@@ -186,10 +208,10 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  box-shadow:0 8px 24px rgba(12,34,40,0.18);
+  box-shadow:0 12px 36px rgba(12,34,40,0.22);
   border:none;
   cursor:pointer;
-  z-index:80;
+  z-index:220; /* higher to float above mobile nav */
   display:none;
 }
 .scroll-top.visible{display:flex}
@@ -208,9 +230,10 @@ body{
   .header-inner{gap:1rem}
   /* show hamburger on mobile */
   .hamburger{display:flex}
-  /* hide desktop nav, use mobile drawer */
+  /* hide desktop nav, mobile drawer controlled by .open */
   .main-nav{display:none}
-  .mobile-nav{display:flex}
+  .mobile-nav{display:none}
+  .mobile-nav.open{display:flex}
   .checkout-grid{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr 1fr;gap:0.6rem}
 }
