@@ -1,3 +1,6 @@
+// assets/js/main.js
+// Perbaikan: mobile hamburger toggle, cart overlay toggle, scroll-to-top visibility
+
 // Data produk (sesuaikan dengan produk nyata Anda)
 const PRODUCTS = [
   {id:1,name:"HNI Health 500ml",category:"madu",price:125000,desc:"Madu murni sumber energi & imun",img:"https://hni.net/public/front/img/produk/hni-health-3_18-11-24_.png",sold:320},
@@ -51,9 +54,10 @@ function cartSummary(){
   return {items:details, total};
 }
 
-// ---- Render functions & utils ----
+// ---- Utilities ----
 function rupiah(v){ return 'Rp' + v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
 
+// ---- Render helpers ----
 function renderProductsGrid(targetId, products){
   const el = document.getElementById(targetId);
   if(!el) return;
@@ -81,12 +85,10 @@ function renderProductsGrid(targetId, products){
     });
   });
 }
-
 function renderBestsellers(){
   const sorted = [...PRODUCTS].sort((a,b)=>b.sold - a.sold).slice(0,3);
   renderProductsGrid('bestsellers', sorted);
 }
-
 function renderReviews(){
   const el = document.getElementById('reviewsCarousel');
   if(!el) return;
@@ -99,13 +101,13 @@ function renderReviews(){
   });
 }
 
+// ---- UI update ----
 function refreshCartUI(){
   const counts = document.querySelectorAll('#cartCount, #cartCount2, #cartCount3, #cartCount4, #cartCountAbout');
   const cart = getCart();
   const totalQty = cart.reduce((s,i)=>s+i.qty,0);
   counts.forEach(c=>{ if(c) c.textContent = totalQty; });
 
-  // Update overlay content
   const cartItemsEl = document.getElementById('cartItems');
   if(cartItemsEl){
     const {items, total} = cartSummary();
@@ -134,7 +136,6 @@ function refreshCartUI(){
     const totalEl = document.getElementById('cartTotal');
     if(totalEl) totalEl.textContent = rupiah(total);
 
-    // events
     cartItemsEl.querySelectorAll('.inc').forEach(b=>{
       b.addEventListener('click',()=> updateQty(parseInt(b.dataset.id,10), getQty(parseInt(b.dataset.id,10))+1));
     });
@@ -162,7 +163,6 @@ function refreshCartUI(){
     if(orderTotalEl) orderTotalEl.textContent = rupiah(total);
   }
 }
-
 function getQty(id){ const cart = getCart(); const it = cart.find(x=>x.id===id); return it?it.qty:0; }
 
 // ---- Tooltip helper for cart buttons ----
@@ -198,64 +198,118 @@ function showCartTooltip(button, text = "Lihat keranjang Anda"){
 
 // ---- Cart overlay toggles with animation ----
 function initCartOverlay(){
+  // Attach to all buttons with class .cart-btn
   const cartButtons = document.querySelectorAll('.cart-btn');
   cartButtons.forEach(b=>{
+    // make sure button is clickable even if multiple exist
     b.addEventListener('click', (e)=>{
-      // tooltip and open overlay (works on all pages)
+      e.preventDefault();
+      // tooltip + open overlay
       showCartTooltip(b);
-      toggleCart();
+      toggleCart(true);
     });
   });
 
   const overlay = document.getElementById('cartOverlay');
   const close = document.getElementById('closeCart');
-  if(close) close.addEventListener('click', ()=> toggleCart());
-  overlay && overlay.addEventListener('click', (e)=> { if(e.target === overlay) toggleCart(); });
-
-  // ensure overlay initial state class removed
-  if(overlay) overlay.classList.remove('open');
+  if(close) close.addEventListener('click', ()=> toggleCart(false));
+  if(overlay){
+    overlay.addEventListener('click', (e)=> { if(e.target === overlay) toggleCart(false); });
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden','true');
+  }
 }
-function toggleCart(){
+function toggleCart(forceOpen){
   const overlay = document.getElementById('cartOverlay');
   if(!overlay) return;
   const isOpen = overlay.classList.contains('open');
-  if(!isOpen){
+  const shouldOpen = (typeof forceOpen === 'boolean') ? forceOpen : !isOpen;
+  if(shouldOpen){
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden','false');
-    if(_cartTooltipEl){ _cartTooltipEl.classList.remove('show'); setTimeout(()=> _cartTooltipEl && _cartTooltipEl.remove(), 120); _cartTooltipEl = null; }
+    document.body.style.overflow = 'hidden';
   } else {
     overlay.classList.remove('open');
     overlay.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
   }
 }
 
 // ---- Mobile menu (hamburger) ----
 function initMobileMenu(){
-  const hamburgerBtns = document.querySelectorAll('#hamburgerBtn');
+  const hamburgerBtns = document.querySelectorAll('.hamburger');
   const mobileNav = document.getElementById('mobileNav');
-  const mobileNavClose = document.getElementById('mobileNavClose');
+  const mobileNavClose = document.querySelector('.mobile-nav-close');
+  if(!mobileNav) return;
+  // Ensure initial closed
+  mobileNav.classList.remove('open');
+  mobileNav.setAttribute('aria-hidden','true');
+
   hamburgerBtns.forEach(h=>{
-    h.addEventListener('click', ()=> {
-      if(mobileNav) {
+    h.addEventListener('click', (e)=>{
+      e.preventDefault();
+      // toggle open/close
+      const isOpen = mobileNav.classList.contains('open');
+      if(!isOpen){
         mobileNav.classList.add('open');
         mobileNav.setAttribute('aria-hidden','false');
+        document.body.style.overflow = 'hidden';
+      } else {
+        mobileNav.classList.remove('open');
+        mobileNav.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
       }
     });
   });
-  if(mobileNavClose) mobileNavClose.addEventListener('click', ()=> {
-    if(mobileNav){
+
+  if(mobileNavClose){
+    mobileNavClose.addEventListener('click', ()=>{
       mobileNav.classList.remove('open');
       mobileNav.setAttribute('aria-hidden','true');
+      document.body.style.overflow = '';
+    });
+  }
+
+  // close when clicking on backdrop (mobileNav itself)
+  mobileNav.addEventListener('click', (e)=>{
+    if(e.target === mobileNav){
+      mobileNav.classList.remove('open');
+      mobileNav.setAttribute('aria-hidden','true');
+      document.body.style.overflow = '';
     }
   });
-  // close mobile menu when clicking a link inside
-  const mobileLinks = mobileNav ? mobileNav.querySelectorAll('a') : [];
-  mobileLinks.forEach(a=> a.addEventListener('click', ()=> {
-    if(mobileNav){ mobileNav.classList.remove('open'); mobileNav.setAttribute('aria-hidden','true'); }
-  }));
+
+  // close when tapping a link inside
+  mobileNav.querySelectorAll('a').forEach(a=>{
+    a.addEventListener('click', ()=> {
+      mobileNav.classList.remove('open');
+      mobileNav.setAttribute('aria-hidden','true');
+      document.body.style.overflow = '';
+    });
+  });
 }
 
-// ---- Filter on products page ----
+// ---- Scroll to top button ----
+function ensureScrollTopButton(){
+  let btn = document.getElementById('scrollTopBtn');
+  if(!btn){
+    btn = document.createElement('button');
+    btn.id = 'scrollTopBtn';
+    btn.className = 'scroll-top';
+    btn.setAttribute('aria-label','Ke atas');
+    btn.textContent = '↑';
+    document.body.appendChild(btn);
+  }
+  btn.addEventListener('click', ()=> window.scrollTo({top:0,behavior:'smooth'}));
+  function onScroll(){
+    const show = window.scrollY > 200;
+    btn.classList.toggle('visible', show);
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+}
+
+// ---- Filters / Checkout ----
 function initFilters(){
   document.querySelectorAll('.filter-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -267,8 +321,6 @@ function initFilters(){
     });
   });
 }
-
-// ---- Checkout form -> WhatsApp ----
 function initCheckoutForm(){
   const form = document.getElementById('checkoutForm');
   if(!form) return;
@@ -293,27 +345,68 @@ function initCheckoutForm(){
   });
 }
 
-// ---- Scroll to top button ----
-function initScrollTop(){
-  const btns = document.querySelectorAll('#scrollTopBtn');
-  function onScroll(){
-    const show = window.scrollY > 200;
-    btns.forEach(b=> b.classList.toggle('visible', show));
-  }
-  btns.forEach(b=> b.addEventListener('click', ()=> window.scrollTo({top:0,behavior:'smooth'})));
-  window.addEventListener('scroll', onScroll);
-  onScroll();
+// ---- Product detail render ----
+function renderProductDetail(){
+  const el = document.getElementById('productDetail');
+  if(!el) return;
+  const qp = new URLSearchParams(location.search);
+  const id = parseInt(qp.get('id')||'0',10);
+  const prod = PRODUCTS.find(p=>p.id===id) || PRODUCTS[0];
+  el.innerHTML = `
+    <div class="product-detail-card" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div>
+        <div style="background:var(--soft);border-radius:12px;padding:1rem;text-align:center">
+          <img src="${prod.img}" alt="${prod.name}" style="max-width:100%;height:320px;object-fit:contain">
+        </div>
+      </div>
+      <div>
+        <h1>${prod.name}</h1>
+        <div style="color:var(--muted);margin-bottom:0.6rem">${prod.desc}</div>
+        <div style="font-size:1.2rem;color:var(--accent);font-weight:700">${rupiah(prod.price)}</div>
+        <div style="margin-top:1rem;display:flex;gap:0.6rem;align-items:center">
+          <label>Jumlah <input id="qtySelect" type="number" min="1" value="1" style="width:80px;padding:0.4rem;border-radius:8px;border:1px solid #e6eef0"></label>
+          <button id="addToCartBtn" class="btn btn-primary">Tambah ke Keranjang</button>
+          <a href="checkout.html" class="btn btn-ghost">Checkout</a>
+        </div>
+        <div style="margin-top:1.2rem;color:var(--muted)">
+          <strong>Terjual:</strong> ${prod.sold} &nbsp; | &nbsp; <strong>Kategori:</strong> ${prod.category}
+        </div>
+      </div>
+    </div>
+  `;
+  const btn = document.getElementById('addToCartBtn');
+  btn.addEventListener('click', ()=>{
+    const qty = parseInt(document.getElementById('qtySelect').value||'1',10);
+    addToCart(prod.id, qty);
+    btn.textContent = 'Ditambahkan ✓';
+    setTimeout(()=> btn.textContent = 'Tambah ke Keranjang', 900);
+  });
 }
 
-// ---- General init on DOMContentLoaded ----
+// ---- Slider ----
+function initSlider(){
+  const slider = document.getElementById('heroSlider');
+  if(!slider) return;
+  const slides = slider.querySelectorAll('.slide');
+  let idx = 0;
+  function show(i){ slides.forEach((s,si)=> s.style.display = (si===i? 'block':'none')); }
+  show(0);
+  const nextBtn = slider.querySelector('.next');
+  const prevBtn = slider.querySelector('.prev');
+  if(nextBtn) nextBtn.addEventListener('click', ()=> { idx = (idx+1)%slides.length; show(idx); });
+  if(prevBtn) prevBtn.addEventListener('click', ()=> { idx = (idx-1+slides.length)%slides.length; show(idx); });
+  setInterval(()=>{ idx=(idx+1)%slides.length; show(idx); }, 5000);
+}
+
+// ---- Init everything ----
 document.addEventListener('DOMContentLoaded', ()=>{
-  // set years
+  // years
   document.getElementById('year') && (document.getElementById('year').textContent = new Date().getFullYear());
   document.getElementById('year2') && (document.getElementById('year2').textContent = new Date().getFullYear());
   document.getElementById('year3') && (document.getElementById('year3').textContent = new Date().getFullYear());
   document.getElementById('yearAbout') && (document.getElementById('yearAbout').textContent = new Date().getFullYear());
 
-  // render content
+  // render
   renderProductsGrid('productsGrid', PRODUCTS.slice(0,4));
   renderProductsGrid('productsGridFull', PRODUCTS);
   renderBestsellers();
@@ -324,9 +417,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
   refreshCartUI();
   renderProductDetail();
   initCheckoutForm();
-  initScrollTop();
+  ensureScrollTopButton();
   initMobileMenu();
 
-  // attach global events
+  // global updates
   window.addEventListener('storage', refreshCartUI);
 });
